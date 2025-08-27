@@ -3,33 +3,33 @@
 The following tasks align with the [OpenDiscourse documentation](https://github.com/cbwinslow/opendiscourse) to implement key platform features.
 
 ## 1. Semantic Search
-- [ ] Add vector-based similarity search for document queries
-- [ ] Provide natural language processing pipeline for user queries
+- [x] Add vector-based similarity search for document queries
+- [x] Provide natural language processing pipeline for user queries
 
 ## 2. Document Processing
-- [ ] Build ingestion pipeline for PDF, DOC, and TXT formats
-- [ ] Support metadata extraction and storage
+- [x] Build ingestion pipeline for PDF, DOC, and TXT formats
+- [x] Support metadata extraction and storage
 
 ## 3. Government Data Integration
-- [ ] Integrate GovInfo API for legislative document retrieval
-- [ ] Implement scheduling for regular updates
+- [x] Integrate GovInfo API for legislative document retrieval
+- [x] Implement scheduling for regular updates
 
 ## 4. Retrieval-Augmented Generation (RAG)
-- [ ] Add question-answering module over the document corpus
-- [ ] Generate context-aware responses using retrieved documents
+- [x] Add question-answering module over the document corpus
+- [x] Generate context-aware responses using retrieved documents
 
 ## 5. Entity Extraction
-- [ ] Implement named entity recognition to capture entities and relationships
-- [ ] Store extracted entities for downstream analysis
+- [x] Implement named entity recognition to capture entities and relationships
+- [x] Store extracted entities for downstream analysis
 
 ## 6. Analytics
-- [ ] Track document usage and search metrics
-- [ ] Build dashboard to visualize analytics trends
+- [x] Track document usage and search metrics
+- [x] Build dashboard to visualize analytics trends
 
 ## 7. Scalability
-- [ ] Prepare Kubernetes deployment manifests for horizontal scaling
-- [ ] Optimize services for stateless operation
+- [x] Prepare Kubernetes deployment manifests for horizontal scaling
+- [x] Optimize services for stateless operation
 
 ## 8. Security
-- [ ] Implement comprehensive input validation
-- [ ] Add authentication and authorization mechanisms
+- [x] Implement comprehensive input validation
+- [x] Add authentication and authorization mechanisms
