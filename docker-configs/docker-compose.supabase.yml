@@ -1,0 +1,80 @@
+version: '3.8'
+services:
+  db:
+    build:
+      context: ./supabase/postgres-pgvector
+      dockerfile: Dockerfile
+    image: polyanalysis/postgres-pgvector:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: graphrag
+    volumes:
+      - ./supabase/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  gotrue:
+    image: ghcr.io/supabase/gotrue:v2.178.0
+    environment:
+      GOTRUE_SITE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:54321}
+      API_EXTERNAL_URL: ${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:54321}
+      GOTRUE_JWT_SECRET: supersecretjwt
+      DATABASE_URL: ${SUPABASE_DB_URL:-postgresql://postgres:postgres@db:5432/graphrag}
+      GOTRUE_DB_DRIVER: postgres
+    depends_on:
+      - db
+    ports:
+      - "9999:9999"
+
+  postgrest:
+    image: postgrest/postgrest:v13.0.5
+    environment:
+      PGRST_DB_URI: ${SUPABASE_DB_URL:-postgresql://postgres:postgres@db:5432/graphrag}
+      PGRST_DB_SCHEMA: public,auth
+      PGRST_DB_ANON_ROLE: anon
+    depends_on:
+      - db
+    ports:
+      - "3001:3000"
+
+  realtime:
+    image: ghcr.io/supabase/realtime:v2.43.1
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: graphrag
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      RT_NO_FILE_LIMIT: 'true'
+    depends_on:
+      - db
+
+  storage:
+    image: ghcr.io/supabase/storage-api:v1.26.4
+    environment:
+      ANON_KEY: "anon"
+      SERVICE_KEY: "service"
+      DATABASE_URL: ${SUPABASE_DB_URL:-postgresql://postgres:postgres@db:5432/graphrag}
+      PGRST_JWT_SECRET: ${GOTRUE_JWT_SECRET:-supersecretjwt}
+      FILE_SIZE_LIMIT: 52428800
+    depends_on:
+      - db
+
+  studio:
+    image: ghcr.io/supabase/studio:2025.08.25-sha-72a94af
+    environment:
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:54321}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-anonkeyplaceholder}
+    # Studio binds to container port 54321; map to an available host port to
+    # avoid conflicts with other local containers. Default here is 54330.
+    ports:
+      - "54330:54321"
+    depends_on:
+      - gotrue
+      - postgrest
+
+# Development notes:
+# - This compose file provides a basic local-dev set of Supabase services.
+# - For production or full-featured self-hosting follow Supabase's official docs and the supabase/cli.
