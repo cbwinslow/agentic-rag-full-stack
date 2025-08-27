@@ -1,0 +1,2 @@
+- Integrate health checks for all new services in the Docker stack
+- Automate certificate management for secure local development
